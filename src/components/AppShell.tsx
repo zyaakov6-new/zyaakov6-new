@@ -21,7 +21,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   if (checking) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-white">
+      <div className="flex min-h-screen items-center justify-center bg-stone-50">
         <div className="flex flex-col items-center gap-3">
           <div className="spinner h-6 w-6" />
           <p className="text-xs text-neutral-400">Loading</p>
@@ -31,7 +31,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50/50">
+    <div className="min-h-screen bg-stone-50">
       <Navbar />
       <main className="mx-auto max-w-6xl px-6 py-10">{children}</main>
     </div>

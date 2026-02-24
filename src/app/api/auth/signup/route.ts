@@ -3,8 +3,21 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
 import { createToken, authCookieOptions } from "@/lib/auth";
 import { ApiResponse } from "@/lib/types";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
+
+// 5 signups per 15 minutes per IP
+const SIGNUP_LIMIT = { maxRequests: 5, windowSeconds: 900 };
 
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req.headers);
+  const rl = checkRateLimit(`signup:${ip}`, SIGNUP_LIMIT);
+  if (!rl.allowed) {
+    return NextResponse.json<ApiResponse>(
+      { success: false, error: `Too many attempts. Try again in ${rl.retryAfterSeconds}s.` },
+      { status: 429, headers: { "Retry-After": String(rl.retryAfterSeconds) } }
+    );
+  }
+
   try {
     const { email, password } = await req.json();
 
