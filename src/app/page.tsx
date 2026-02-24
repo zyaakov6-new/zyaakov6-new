@@ -2,9 +2,9 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-stone-50">
+    <div className="min-h-screen bg-amber-50">
       {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-stone-50/80 backdrop-blur-xl border-b border-stone-200/60">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-amber-50/80 backdrop-blur-xl border-b border-stone-200/60">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
           <span className="text-sm font-semibold tracking-tight text-neutral-900">
             Publish Everywhere

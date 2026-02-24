@@ -144,7 +144,7 @@ function ResetForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center px-6 bg-stone-50">
+    <div className="flex min-h-screen items-center justify-center px-6 bg-amber-50">
       <div className="w-full max-w-sm animate-fade-in">
         <Link
           href="/login"
