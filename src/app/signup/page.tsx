@@ -13,12 +13,30 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const passwordChecks = {
+    length: password.length >= 8,
+    uppercase: /[A-Z]/.test(password),
+    number: /\d/.test(password),
+  };
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
 
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
+      return;
+    }
+
+    if (!passwordChecks.length) {
+      setError("Password must be at least 8 characters.");
       return;
     }
 
@@ -115,6 +133,24 @@ export default function SignupPage() {
               />
             </div>
 
+            {password.length > 0 && (
+              <div className="flex flex-wrap gap-x-4 gap-y-1 -mt-2">
+                {[
+                  { label: "8+ characters", met: passwordChecks.length },
+                  { label: "Uppercase", met: passwordChecks.uppercase },
+                  { label: "Number", met: passwordChecks.number },
+                ].map((rule) => (
+                  <span
+                    key={rule.label}
+                    className={`text-xs flex items-center gap-1 transition-colors ${rule.met ? "text-green-600" : "text-neutral-400"
+                      }`}
+                  >
+                    {rule.met ? "✓" : "○"} {rule.label}
+                  </span>
+                ))}
+              </div>
+            )}
+
             <div>
               <label htmlFor="confirmPassword" className="label">
                 Confirm password
@@ -157,7 +193,7 @@ export default function SignupPage() {
             </Link>
           </p>
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 }

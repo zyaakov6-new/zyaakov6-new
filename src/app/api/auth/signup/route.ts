@@ -15,6 +15,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Basic email format check
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json<ApiResponse>(
+        { success: false, error: "Please enter a valid email address." },
+        { status: 400 }
+      );
+    }
+
     if (password.length < 8) {
       return NextResponse.json<ApiResponse>(
         { success: false, error: "Password must be at least 8 characters." },
