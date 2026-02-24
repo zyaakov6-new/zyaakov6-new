@@ -2,9 +2,9 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-stone-50">
       {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-neutral-100">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-stone-50/80 backdrop-blur-xl border-b border-stone-200/60">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
           <span className="text-sm font-semibold tracking-tight text-neutral-900">
             Publish Everywhere
@@ -22,7 +22,7 @@ export default function Home() {
 
       {/* Hero */}
       <section className="relative pt-32 pb-24 px-6 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-accent-50/40 via-white to-white" />
+        <div className="absolute inset-0 bg-gradient-to-b from-accent-50/30 via-stone-50 to-stone-50" />
         <div className="relative mx-auto max-w-3xl text-center">
           <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-accent-600">
             One dashboard. Every platform.
@@ -50,7 +50,7 @@ export default function Home() {
       <section className="py-24 px-6">
         <div className="mx-auto max-w-5xl">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <div className="group rounded-3xl border border-neutral-100 bg-neutral-50/50 p-8 transition-all duration-300 hover:bg-white hover:shadow-elevated hover:border-neutral-200">
+            <div className="group rounded-3xl border border-stone-200/60 bg-stone-100/60 p-8 transition-all duration-300 hover:bg-white/80 hover:shadow-elevated hover:border-neutral-200">
               <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-neutral-900 text-white text-sm font-bold">
                 M
               </div>
@@ -60,7 +60,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="group rounded-3xl border border-neutral-100 bg-neutral-50/50 p-8 transition-all duration-300 hover:bg-white hover:shadow-elevated hover:border-neutral-200">
+            <div className="group rounded-3xl border border-stone-200/60 bg-stone-100/60 p-8 transition-all duration-300 hover:bg-white/80 hover:shadow-elevated hover:border-neutral-200">
               <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-600 text-white text-sm font-bold">
                 W
               </div>
@@ -70,7 +70,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="group rounded-3xl border border-neutral-100 bg-neutral-50/50 p-8 transition-all duration-300 hover:bg-white hover:shadow-elevated hover:border-neutral-200">
+            <div className="group rounded-3xl border border-stone-200/60 bg-stone-100/60 p-8 transition-all duration-300 hover:bg-white/80 hover:shadow-elevated hover:border-neutral-200">
               <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-500 text-white text-sm font-bold">
                 S
               </div>
@@ -84,7 +84,7 @@ export default function Home() {
       </section>
 
       {/* How it works */}
-      <section className="py-24 px-6 border-t border-neutral-100">
+      <section className="py-24 px-6 border-t border-stone-200/60">
         <div className="mx-auto max-w-3xl text-center">
           <p className="text-xs font-semibold uppercase tracking-widest text-neutral-400 mb-3">
             How it works
@@ -136,7 +136,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-neutral-100 py-8 px-6">
+      <footer className="border-t border-stone-200/60 py-8 px-6">
         <div className="mx-auto max-w-6xl flex items-center justify-between">
           <span className="text-xs text-neutral-400">
             Publish Everywhere
