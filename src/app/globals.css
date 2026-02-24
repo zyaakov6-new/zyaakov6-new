@@ -19,55 +19,31 @@
 }
 
 @layer components {
+
   /* ─── Buttons ─── */
   .btn-primary {
-    @apply relative inline-flex items-center justify-center rounded-full bg-neutral-900 px-6 py-3 text-sm font-medium text-white
-           transition-all duration-200
-           hover:bg-neutral-800 hover:shadow-elevated
-           active:scale-[0.98]
-           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2
-           disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:active:scale-100;
+    @apply relative inline-flex items-center justify-center rounded-full bg-neutral-900 px-6 py-3 text-sm font-medium text-white transition-all duration-200 hover:bg-neutral-800 hover:shadow-elevated active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:active:scale-100;
   }
 
   .btn-secondary {
-    @apply relative inline-flex items-center justify-center rounded-full border border-neutral-200 bg-white px-6 py-3 text-sm font-medium text-neutral-900
-           transition-all duration-200
-           hover:bg-neutral-50 hover:border-neutral-300
-           active:scale-[0.98]
-           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2
-           disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100;
+    @apply relative inline-flex items-center justify-center rounded-full border border-neutral-200 bg-white px-6 py-3 text-sm font-medium text-neutral-900 transition-all duration-200 hover:bg-neutral-50 hover:border-neutral-300 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100;
   }
 
   .btn-accent {
-    @apply relative inline-flex items-center justify-center rounded-full bg-accent-600 px-6 py-3 text-sm font-medium text-white
-           transition-all duration-200
-           hover:bg-accent-700 hover:shadow-glow
-           active:scale-[0.98]
-           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-600 focus-visible:ring-offset-2
-           disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100;
+    @apply relative inline-flex items-center justify-center rounded-full bg-accent-600 px-6 py-3 text-sm font-medium text-white transition-all duration-200 hover:bg-accent-700 hover:shadow-glow active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-600 focus-visible:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100;
   }
 
   .btn-danger {
-    @apply relative inline-flex items-center justify-center rounded-full bg-red-600 px-6 py-3 text-sm font-medium text-white
-           transition-all duration-200
-           hover:bg-red-700
-           active:scale-[0.98]
-           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2
-           disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100;
+    @apply relative inline-flex items-center justify-center rounded-full bg-red-600 px-6 py-3 text-sm font-medium text-white transition-all duration-200 hover:bg-red-700 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100;
   }
 
   .btn-ghost {
-    @apply relative inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-medium text-neutral-500
-           transition-all duration-200
-           hover:text-neutral-900 hover:bg-neutral-100
-           active:scale-[0.98]
-           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2;
+    @apply relative inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-medium text-neutral-500 transition-all duration-200 hover:text-neutral-900 hover:bg-neutral-100 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2;
   }
 
   /* ─── Cards ─── */
   .card {
-    @apply rounded-2xl border border-neutral-100 bg-white p-6 shadow-glass
-           transition-shadow duration-300;
+    @apply rounded-2xl border border-neutral-100 bg-white p-6 shadow-glass transition-shadow duration-300;
   }
 
   .card-hover {
@@ -76,9 +52,7 @@
 
   /* ─── Inputs ─── */
   .input {
-    @apply block w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm text-neutral-900 placeholder-neutral-400
-           transition-all duration-200
-           focus:border-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-900/5;
+    @apply block w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm text-neutral-900 placeholder-neutral-400 transition-all duration-200 focus:border-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-900/5;
   }
 
   .label {
