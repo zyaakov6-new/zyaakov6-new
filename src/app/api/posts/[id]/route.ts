@@ -32,5 +32,10 @@ export async function GET(
     );
   }
 
-  return NextResponse.json<ApiResponse>({ success: true, data: post });
+  const parsed = {
+    ...post,
+    tags: JSON.parse(post.tags || "[]") as string[],
+  };
+
+  return NextResponse.json<ApiResponse>({ success: true, data: parsed });
 }

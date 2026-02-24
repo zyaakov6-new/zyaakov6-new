@@ -3,7 +3,7 @@ import { getAuthUserFromRequest } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { encryptJSON, decryptJSON } from "@/lib/crypto";
 import { ApiResponse } from "@/lib/types";
-import { ProviderType } from "@prisma/client";
+// With SQLite, providerType is a plain string (no Prisma enum)
 
 /** GET /api/credentials — list all credentials for the current user (configs are NOT returned) */
 export async function GET(req: NextRequest) {
@@ -60,13 +60,13 @@ export async function PUT(req: NextRequest) {
     where: {
       userId_providerType: {
         userId: authUser.userId,
-        providerType: providerType as ProviderType,
+        providerType: providerType as string,
       },
     },
     update: { config: encrypted },
     create: {
       userId: authUser.userId,
-      providerType: providerType as ProviderType,
+      providerType: providerType as string,
       config: encrypted,
     },
   });
@@ -105,7 +105,7 @@ export async function DELETE(req: NextRequest) {
   await prisma.providerCredential.deleteMany({
     where: {
       userId: authUser.userId,
-      providerType: providerType as ProviderType,
+      providerType: providerType as string,
     },
   });
 
