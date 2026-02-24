@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import AppShell from "@/components/AppShell";
+import ProviderIcon from "@/components/ProviderIcon";
 import { apiFetch } from "@/lib/api";
 
 type ProviderType = "MEDIUM" | "WORDPRESS" | "SUBSTACK";
@@ -11,86 +12,6 @@ interface CredentialRecord {
   providerType: ProviderType;
   createdAt: string;
   updatedAt: string;
-}
-
-interface ProviderCardProps {
-  provider: ProviderType;
-  title: string;
-  description: string;
-  connected: boolean;
-  onSave: () => void;
-  onDelete: () => void;
-  children: React.ReactNode;
-}
-
-function ProviderCard({
-  provider,
-  title,
-  description,
-  connected,
-  onSave,
-  onDelete,
-  children,
-}: ProviderCardProps) {
-  const [testResult, setTestResult] = useState<{
-    valid: boolean;
-    error?: string;
-    [key: string]: unknown;
-  } | null>(null);
-  const [testing, setTesting] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-
-  return (
-    <div className="card">
-      <div className="mb-4 flex items-start justify-between">
-        <div>
-          <h3 className="text-base font-semibold text-gray-900">{title}</h3>
-          <p className="mt-0.5 text-sm text-gray-500">{description}</p>
-        </div>
-        {connected && (
-          <span className="inline-flex items-center rounded-full bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-700">
-            Connected
-          </span>
-        )}
-      </div>
-
-      <div className="space-y-3">{children}</div>
-
-      {testResult && (
-        <div
-          className={`mt-3 rounded-lg px-3 py-2 text-sm ${
-            testResult.valid
-              ? "bg-green-50 text-green-700"
-              : "bg-red-50 text-red-700"
-          }`}
-        >
-          {testResult.valid
-            ? "Connection successful!"
-            : `Connection failed: ${testResult.error}`}
-        </div>
-      )}
-
-      <div className="mt-4 flex gap-2">
-        <button
-          onClick={onSave}
-          disabled={saving}
-          className="btn-primary text-sm"
-        >
-          {saving ? "Saving..." : connected ? "Update" : "Save"}
-        </button>
-        {connected && (
-          <button
-            onClick={onDelete}
-            disabled={deleting}
-            className="btn-danger text-sm"
-          >
-            {deleting ? "Removing..." : "Remove"}
-          </button>
-        )}
-      </div>
-    </div>
-  );
 }
 
 export default function AccountsPage() {
@@ -129,14 +50,13 @@ export default function AccountsPage() {
   }
 
   async function testConnection(provider: ProviderType, config: unknown) {
-    const res = await apiFetch<{ valid: boolean; error?: string }>(
+    return apiFetch<{ valid: boolean; error?: string }>(
       "/api/credentials/test",
       {
         method: "POST",
         body: JSON.stringify({ providerType: provider, config }),
       }
     );
-    return res;
   }
 
   async function saveCredential(provider: ProviderType, config: unknown) {
@@ -144,24 +64,18 @@ export default function AccountsPage() {
       method: "PUT",
       body: JSON.stringify({ providerType: provider, config }),
     });
-    if (res.success) {
-      await loadCredentials();
-    }
+    if (res.success) await loadCredentials();
     return res;
   }
 
   async function deleteCredential(provider: ProviderType) {
-    const res = await apiFetch(
-      `/api/credentials?providerType=${provider}`,
-      { method: "DELETE" }
-    );
-    if (res.success) {
-      await loadCredentials();
-    }
+    const res = await apiFetch(`/api/credentials?providerType=${provider}`, {
+      method: "DELETE",
+    });
+    if (res.success) await loadCredentials();
     return res;
   }
 
-  // Handlers
   async function handleMediumSave() {
     if (!mediumToken.trim()) {
       setMediumStatus("error:Please enter your Medium token.");
@@ -236,208 +150,234 @@ export default function AccountsPage() {
     if (!status) return null;
     if (status === "testing" || status === "saving") {
       return (
-        <p className="mt-3 rounded-lg bg-blue-50 px-3 py-2 text-sm text-blue-700">
+        <div className="mt-4 flex items-center gap-2 rounded-xl bg-neutral-50 px-4 py-3 text-sm text-neutral-600 border border-neutral-100">
+          <span className="spinner h-3.5 w-3.5" />
           {status === "testing" ? "Testing connection..." : "Saving..."}
-        </p>
+        </div>
       );
     }
     const [type, ...rest] = status.split(":");
     const message = rest.join(":");
     return (
-      <p
-        className={`mt-3 rounded-lg px-3 py-2 text-sm ${
+      <div
+        className={`mt-4 rounded-xl px-4 py-3 text-sm border ${
           type === "success"
-            ? "bg-green-50 text-green-700"
-            : "bg-red-50 text-red-700"
+            ? "bg-emerald-50 text-emerald-700 border-emerald-100"
+            : "bg-red-50 text-red-700 border-red-100"
         }`}
       >
         {message}
-      </p>
+      </div>
+    );
+  }
+
+  function ConnectedBadge() {
+    return (
+      <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">
+        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+        Connected
+      </span>
     );
   }
 
   return (
     <AppShell>
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Connect Accounts</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          Add your platform credentials to enable cross-posting.
-        </p>
+      <div className="animate-fade-in">
+        <div className="mb-10">
+          <h1 className="section-title">Accounts</h1>
+          <p className="section-subtitle">
+            Connect your platforms to start publishing.
+          </p>
+        </div>
+
+        {loading ? (
+          <div className="flex justify-center py-20">
+            <div className="spinner h-6 w-6" />
+          </div>
+        ) : (
+          <div className="space-y-6 animate-fade-in-up">
+            {/* Medium */}
+            <div className="card">
+              <div className="flex items-start justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <ProviderIcon provider="MEDIUM" size="lg" />
+                  <div>
+                    <h3 className="text-base font-semibold text-neutral-900">
+                      Medium
+                    </h3>
+                    <p className="text-sm text-neutral-400">
+                      Integration token
+                    </p>
+                  </div>
+                </div>
+                {isConnected("MEDIUM") && <ConnectedBadge />}
+              </div>
+
+              <div>
+                <label className="label">Token</label>
+                <input
+                  type="password"
+                  value={mediumToken}
+                  onChange={(e) => setMediumToken(e.target.value)}
+                  className="input"
+                  placeholder="Your Medium integration token"
+                />
+                <p className="mt-2 text-xs text-neutral-400">
+                  Medium Settings &rarr; Security and apps &rarr; Integration tokens
+                </p>
+              </div>
+
+              {renderStatus(mediumStatus)}
+
+              <div className="mt-5 flex gap-3">
+                <button onClick={handleMediumSave} className="btn-primary text-sm py-2.5">
+                  {isConnected("MEDIUM") ? "Update" : "Connect"}
+                </button>
+                {isConnected("MEDIUM") && (
+                  <button
+                    onClick={() => deleteCredential("MEDIUM")}
+                    className="btn-ghost text-sm text-red-500 hover:text-red-700 hover:bg-red-50"
+                  >
+                    Disconnect
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* WordPress */}
+            <div className="card">
+              <div className="flex items-start justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <ProviderIcon provider="WORDPRESS" size="lg" />
+                  <div>
+                    <h3 className="text-base font-semibold text-neutral-900">
+                      WordPress
+                    </h3>
+                    <p className="text-sm text-neutral-400">
+                      REST API credentials
+                    </p>
+                  </div>
+                </div>
+                {isConnected("WORDPRESS") && <ConnectedBadge />}
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="label">Site URL</label>
+                  <input
+                    type="url"
+                    value={wpSiteUrl}
+                    onChange={(e) => setWpSiteUrl(e.target.value)}
+                    className="input"
+                    placeholder="https://yoursite.com"
+                  />
+                </div>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className="label">Username</label>
+                    <input
+                      type="text"
+                      value={wpUsername}
+                      onChange={(e) => setWpUsername(e.target.value)}
+                      className="input"
+                      placeholder="admin"
+                    />
+                  </div>
+                  <div>
+                    <label className="label">Application Password</label>
+                    <input
+                      type="password"
+                      value={wpPassword}
+                      onChange={(e) => setWpPassword(e.target.value)}
+                      className="input"
+                      placeholder="xxxx xxxx xxxx xxxx"
+                    />
+                  </div>
+                </div>
+                <p className="text-xs text-neutral-400">
+                  WP Admin &rarr; Users &rarr; Profile &rarr; Application Passwords
+                </p>
+              </div>
+
+              {renderStatus(wpStatus)}
+
+              <div className="mt-5 flex gap-3">
+                <button onClick={handleWordpressSave} className="btn-primary text-sm py-2.5">
+                  {isConnected("WORDPRESS") ? "Update" : "Connect"}
+                </button>
+                {isConnected("WORDPRESS") && (
+                  <button
+                    onClick={() => deleteCredential("WORDPRESS")}
+                    className="btn-ghost text-sm text-red-500 hover:text-red-700 hover:bg-red-50"
+                  >
+                    Disconnect
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Substack */}
+            <div className="card">
+              <div className="flex items-start justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <ProviderIcon provider="SUBSTACK" size="lg" />
+                  <div>
+                    <h3 className="text-base font-semibold text-neutral-900">
+                      Substack
+                    </h3>
+                    <p className="text-sm text-neutral-400">
+                      Session cookie
+                    </p>
+                  </div>
+                </div>
+                {isConnected("SUBSTACK") && <ConnectedBadge />}
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="label">Publication URL</label>
+                  <input
+                    type="url"
+                    value={substackUrl}
+                    onChange={(e) => setSubstackUrl(e.target.value)}
+                    className="input"
+                    placeholder="https://yourpub.substack.com"
+                  />
+                </div>
+                <div>
+                  <label className="label">Session Token</label>
+                  <input
+                    type="password"
+                    value={substackToken}
+                    onChange={(e) => setSubstackToken(e.target.value)}
+                    className="input"
+                    placeholder="substack.sid cookie value"
+                  />
+                  <p className="mt-2 text-xs text-neutral-400">
+                    DevTools &rarr; Application &rarr; Cookies after logging in
+                  </p>
+                </div>
+              </div>
+
+              {renderStatus(substackStatus)}
+
+              <div className="mt-5 flex gap-3">
+                <button onClick={handleSubstackSave} className="btn-primary text-sm py-2.5">
+                  {isConnected("SUBSTACK") ? "Update" : "Connect"}
+                </button>
+                {isConnected("SUBSTACK") && (
+                  <button
+                    onClick={() => deleteCredential("SUBSTACK")}
+                    className="btn-ghost text-sm text-red-500 hover:text-red-700 hover:bg-red-50"
+                  >
+                    Disconnect
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-
-      {loading ? (
-        <div className="flex justify-center py-12">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-accent-600" />
-        </div>
-      ) : (
-        <div className="space-y-6">
-          {/* Medium */}
-          <div className="card">
-            <div className="mb-4 flex items-start justify-between">
-              <div>
-                <h3 className="text-base font-semibold text-gray-900">Medium</h3>
-                <p className="mt-0.5 text-sm text-gray-500">
-                  Connect with your Medium integration token.
-                </p>
-              </div>
-              {isConnected("MEDIUM") && (
-                <span className="inline-flex items-center rounded-full bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-700">
-                  Connected
-                </span>
-              )}
-            </div>
-            <div>
-              <label className="label">Integration Token</label>
-              <input
-                type="password"
-                value={mediumToken}
-                onChange={(e) => setMediumToken(e.target.value)}
-                className="input"
-                placeholder="Your Medium integration token"
-              />
-              <p className="mt-1 text-xs text-gray-400">
-                Get your token from Medium Settings &rarr; Integration tokens.
-              </p>
-            </div>
-            {renderStatus(mediumStatus)}
-            <div className="mt-4 flex gap-2">
-              <button onClick={handleMediumSave} className="btn-primary text-sm">
-                {isConnected("MEDIUM") ? "Update" : "Save & Test"}
-              </button>
-              {isConnected("MEDIUM") && (
-                <button
-                  onClick={() => deleteCredential("MEDIUM").then(loadCredentials)}
-                  className="btn-danger text-sm"
-                >
-                  Remove
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* WordPress */}
-          <div className="card">
-            <div className="mb-4 flex items-start justify-between">
-              <div>
-                <h3 className="text-base font-semibold text-gray-900">WordPress</h3>
-                <p className="mt-0.5 text-sm text-gray-500">
-                  Connect with your WordPress site URL and Application Password.
-                </p>
-              </div>
-              {isConnected("WORDPRESS") && (
-                <span className="inline-flex items-center rounded-full bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-700">
-                  Connected
-                </span>
-              )}
-            </div>
-            <div className="space-y-3">
-              <div>
-                <label className="label">Site URL</label>
-                <input
-                  type="url"
-                  value={wpSiteUrl}
-                  onChange={(e) => setWpSiteUrl(e.target.value)}
-                  className="input"
-                  placeholder="https://yoursite.com"
-                />
-              </div>
-              <div>
-                <label className="label">Username</label>
-                <input
-                  type="text"
-                  value={wpUsername}
-                  onChange={(e) => setWpUsername(e.target.value)}
-                  className="input"
-                  placeholder="admin"
-                />
-              </div>
-              <div>
-                <label className="label">Application Password</label>
-                <input
-                  type="password"
-                  value={wpPassword}
-                  onChange={(e) => setWpPassword(e.target.value)}
-                  className="input"
-                  placeholder="xxxx xxxx xxxx xxxx"
-                />
-                <p className="mt-1 text-xs text-gray-400">
-                  Generate at WP Admin &rarr; Users &rarr; Your Profile &rarr; Application Passwords.
-                </p>
-              </div>
-            </div>
-            {renderStatus(wpStatus)}
-            <div className="mt-4 flex gap-2">
-              <button onClick={handleWordpressSave} className="btn-primary text-sm">
-                {isConnected("WORDPRESS") ? "Update" : "Save & Test"}
-              </button>
-              {isConnected("WORDPRESS") && (
-                <button
-                  onClick={() => deleteCredential("WORDPRESS").then(loadCredentials)}
-                  className="btn-danger text-sm"
-                >
-                  Remove
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Substack */}
-          <div className="card">
-            <div className="mb-4 flex items-start justify-between">
-              <div>
-                <h3 className="text-base font-semibold text-gray-900">Substack</h3>
-                <p className="mt-0.5 text-sm text-gray-500">
-                  Connect with your Substack publication URL and session cookie.
-                </p>
-              </div>
-              {isConnected("SUBSTACK") && (
-                <span className="inline-flex items-center rounded-full bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-700">
-                  Connected
-                </span>
-              )}
-            </div>
-            <div className="space-y-3">
-              <div>
-                <label className="label">Publication URL</label>
-                <input
-                  type="url"
-                  value={substackUrl}
-                  onChange={(e) => setSubstackUrl(e.target.value)}
-                  className="input"
-                  placeholder="https://yourpub.substack.com"
-                />
-              </div>
-              <div>
-                <label className="label">Session Token (substack.sid cookie)</label>
-                <input
-                  type="password"
-                  value={substackToken}
-                  onChange={(e) => setSubstackToken(e.target.value)}
-                  className="input"
-                  placeholder="Your substack.sid cookie value"
-                />
-                <p className="mt-1 text-xs text-gray-400">
-                  Extract from your browser&apos;s DevTools &rarr; Application &rarr; Cookies after logging in to Substack.
-                </p>
-              </div>
-            </div>
-            {renderStatus(substackStatus)}
-            <div className="mt-4 flex gap-2">
-              <button onClick={handleSubstackSave} className="btn-primary text-sm">
-                {isConnected("SUBSTACK") ? "Update" : "Save"}
-              </button>
-              {isConnected("SUBSTACK") && (
-                <button
-                  onClick={() => deleteCredential("SUBSTACK").then(loadCredentials)}
-                  className="btn-danger text-sm"
-                >
-                  Remove
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </AppShell>
   );
 }

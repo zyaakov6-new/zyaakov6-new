@@ -48,75 +48,91 @@ export default function PostDetailPage() {
 
   return (
     <AppShell>
-      {/* Back link */}
-      <Link
-        href="/posts"
-        className="mb-6 inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
-      >
-        &larr; Back to history
-      </Link>
+      <div className="animate-fade-in">
+        {/* Back */}
+        <Link
+          href="/posts"
+          className="inline-flex items-center gap-2 text-sm text-neutral-400 hover:text-neutral-900 transition-colors mb-8"
+        >
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          History
+        </Link>
 
-      {loading ? (
-        <div className="flex justify-center py-12">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-accent-600" />
-        </div>
-      ) : error ? (
-        <div className="card">
-          <p className="text-red-600">{error}</p>
-        </div>
-      ) : post ? (
-        <div className="space-y-6">
-          {/* Post header */}
-          <div className="card">
-            <h1 className="text-2xl font-bold text-gray-900">{post.title}</h1>
-            {post.subtitle && (
-              <p className="mt-1 text-lg text-gray-500">{post.subtitle}</p>
-            )}
-            <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-gray-500">
-              <span>
-                Created {new Date(post.createdAt).toLocaleDateString()}
-              </span>
-              {post.tags.length > 0 && (
-                <div className="flex gap-1">
-                  {post.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-              {post.canonicalUrl && (
-                <a
-                  href={post.canonicalUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-accent-600 hover:underline"
-                >
-                  Canonical URL
-                </a>
-              )}
-            </div>
+        {loading ? (
+          <div className="flex justify-center py-20">
+            <div className="spinner h-6 w-6" />
           </div>
+        ) : error ? (
+          <div className="card py-12 text-center">
+            <p className="text-sm text-red-600">{error}</p>
+          </div>
+        ) : post ? (
+          <div className="space-y-6 animate-fade-in-up">
+            {/* Header */}
+            <div className="card">
+              <h1 className="text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl">
+                {post.title}
+              </h1>
+              {post.subtitle && (
+                <p className="mt-2 text-lg text-neutral-400">{post.subtitle}</p>
+              )}
+              <div className="mt-6 flex flex-wrap items-center gap-3">
+                <span className="text-xs text-neutral-400">
+                  {new Date(post.createdAt).toLocaleDateString("en-US", {
+                    weekday: "long",
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </span>
+                {post.tags.length > 0 && (
+                  <>
+                    <span className="text-neutral-200">|</span>
+                    <div className="flex gap-1.5">
+                      {post.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-full bg-neutral-100 px-3 py-0.5 text-xs font-medium text-neutral-600"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </>
+                )}
+                {post.canonicalUrl && (
+                  <>
+                    <span className="text-neutral-200">|</span>
+                    <a
+                      href={post.canonicalUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-accent-600 hover:underline"
+                    >
+                      Canonical URL
+                    </a>
+                  </>
+                )}
+              </div>
+            </div>
 
-          {/* Publication results */}
-          <div className="card">
-            <h2 className="mb-4 text-lg font-semibold text-gray-900">
-              Publication Results
-            </h2>
-            <div className="space-y-3">
-              {post.publications.map((pub) => (
-                <div
-                  key={pub.id}
-                  className="rounded-lg border border-gray-100 p-4"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <ProviderIcon provider={pub.providerType} size="md" />
+            {/* Publications */}
+            <div className="card">
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-5">
+                Deliveries
+              </h2>
+              <div className="space-y-3">
+                {post.publications.map((pub) => (
+                  <div
+                    key={pub.id}
+                    className="flex items-center justify-between rounded-2xl border border-neutral-100 p-5 transition-all duration-200 hover:bg-neutral-50"
+                  >
+                    <div className="flex items-center gap-4">
+                      <ProviderIcon provider={pub.providerType} size="lg" />
                       <div>
-                        <p className="font-medium text-gray-900">
+                        <p className="text-sm font-semibold text-neutral-900">
                           {providerNames[pub.providerType]}
                         </p>
                         {pub.remoteUrl && (
@@ -124,43 +140,55 @@ export default function PostDetailPage() {
                             href={pub.remoteUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-sm text-accent-600 hover:underline"
+                            className="text-xs text-accent-600 hover:underline"
                           >
-                            {pub.remoteUrl}
+                            View published post
                           </a>
                         )}
-                        {pub.remoteId && (
-                          <p className="text-xs text-gray-400 mt-0.5">
-                            Remote ID: {pub.remoteId}
+                        {!pub.remoteUrl && pub.remoteId && (
+                          <p className="text-xs text-neutral-400">
+                            ID: {pub.remoteId}
                           </p>
                         )}
                       </div>
                     </div>
                     <StatusBadge status={pub.status as "SUCCESS" | "FAILED"} />
                   </div>
-                  {pub.errorMessage && (
-                    <div className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
-                      {pub.errorMessage}
-                    </div>
-                  )}
-                </div>
-              ))}
+                ))}
+                {post.publications.some((p) => p.errorMessage) && (
+                  <div className="mt-2 space-y-2">
+                    {post.publications
+                      .filter((p) => p.errorMessage)
+                      .map((pub) => (
+                        <div
+                          key={pub.id}
+                          className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 text-xs text-red-700"
+                        >
+                          <span className="font-medium">
+                            {providerNames[pub.providerType]}:
+                          </span>{" "}
+                          {pub.errorMessage}
+                        </div>
+                      ))}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
 
-          {/* Post content preview */}
-          <div className="card">
-            <h2 className="mb-4 text-lg font-semibold text-gray-900">
-              Content Preview
-            </h2>
-            <div className="rounded-lg bg-gray-50 p-4">
-              <pre className="whitespace-pre-wrap text-sm text-gray-700 font-mono">
-                {post.content}
-              </pre>
+            {/* Content */}
+            <div className="card">
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-5">
+                Content
+              </h2>
+              <div className="rounded-2xl bg-neutral-50 border border-neutral-100 p-6">
+                <pre className="whitespace-pre-wrap text-sm text-neutral-700 font-mono leading-relaxed">
+                  {post.content}
+                </pre>
+              </div>
             </div>
           </div>
-        </div>
-      ) : null}
+        ) : null}
+      </div>
     </AppShell>
   );
 }

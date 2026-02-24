@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import AppShell from "@/components/AppShell";
-import ProviderIcon, { providerNames } from "@/components/ProviderIcon";
+import ProviderIcon from "@/components/ProviderIcon";
 import StatusBadge from "@/components/StatusBadge";
 import { apiFetch } from "@/lib/api";
 
@@ -34,98 +34,93 @@ export default function PostsHistoryPage() {
 
   return (
     <AppShell>
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Posts History</h1>
-          <p className="mt-1 text-sm text-gray-500">
-            All posts published from this dashboard.
-          </p>
-        </div>
-        <Link href="/posts/new" className="btn-primary">
-          New Post
-        </Link>
-      </div>
-
-      {loading ? (
-        <div className="flex justify-center py-12">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-accent-600" />
-        </div>
-      ) : posts.length === 0 ? (
-        <div className="card text-center py-12">
-          <p className="text-gray-500">No posts yet.</p>
-          <Link href="/posts/new" className="mt-4 btn-primary inline-flex">
-            Create your first post
+      <div className="animate-fade-in">
+        {/* Header */}
+        <div className="mb-10 flex items-end justify-between">
+          <div>
+            <h1 className="section-title">History</h1>
+            <p className="section-subtitle">
+              Every post you&apos;ve published.
+            </p>
+          </div>
+          <Link href="/posts/new" className="btn-primary text-sm">
+            New post
           </Link>
         </div>
-      ) : (
-        <div className="card overflow-hidden p-0">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-gray-100 bg-gray-50/50">
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Title
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Date
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Platforms
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Status
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {posts.map((post) => {
-                const allSuccess = post.publications.every(
-                  (p) => p.status === "SUCCESS"
-                );
-                const anyFailed = post.publications.some(
-                  (p) => p.status === "FAILED"
-                );
 
-                return (
-                  <tr key={post.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4">
-                      <Link
-                        href={`/posts/${post.id}`}
-                        className="text-sm font-medium text-gray-900 hover:text-accent-600"
-                      >
-                        {post.title}
-                      </Link>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">
-                      {new Date(post.createdAt).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex gap-1.5">
-                        {post.publications.map((pub) => (
-                          <ProviderIcon
-                            key={pub.id}
-                            provider={pub.providerType}
-                          />
-                        ))}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <StatusBadge
-                        status={
-                          allSuccess
-                            ? "SUCCESS"
-                            : anyFailed
-                            ? "FAILED"
-                            : "PENDING"
-                        }
-                      />
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
+        {loading ? (
+          <div className="flex justify-center py-20">
+            <div className="spinner h-6 w-6" />
+          </div>
+        ) : posts.length === 0 ? (
+          <div className="card text-center py-20 animate-fade-in-up">
+            <p className="text-neutral-400 mb-4">No posts yet.</p>
+            <Link href="/posts/new" className="btn-primary text-sm inline-flex">
+              Create your first post
+            </Link>
+          </div>
+        ) : (
+          <div className="animate-fade-in-up space-y-2">
+            {posts.map((post) => {
+              const allSuccess = post.publications.every(
+                (p) => p.status === "SUCCESS"
+              );
+              const anyFailed = post.publications.some(
+                (p) => p.status === "FAILED"
+              );
+
+              return (
+                <Link
+                  key={post.id}
+                  href={`/posts/${post.id}`}
+                  className="group flex items-center justify-between rounded-2xl border border-neutral-100 bg-white px-6 py-5 transition-all duration-200 hover:shadow-elevated hover:border-neutral-200"
+                >
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-semibold text-neutral-900 group-hover:text-accent-700 transition-colors">
+                      {post.title}
+                    </p>
+                    <p className="mt-1 text-xs text-neutral-400">
+                      {new Date(post.createdAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </p>
+                  </div>
+                  <div className="ml-6 flex items-center gap-4">
+                    <div className="flex -space-x-1">
+                      {post.publications.map((pub) => (
+                        <ProviderIcon
+                          key={pub.id}
+                          provider={pub.providerType}
+                        />
+                      ))}
+                    </div>
+                    <StatusBadge
+                      status={
+                        allSuccess
+                          ? "SUCCESS"
+                          : anyFailed
+                          ? "FAILED"
+                          : "PENDING"
+                      }
+                    />
+                    <svg
+                      className="h-4 w-4 text-neutral-300 group-hover:text-neutral-500 transition-colors"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </AppShell>
   );
 }

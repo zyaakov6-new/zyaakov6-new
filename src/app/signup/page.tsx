@@ -39,19 +39,49 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
-      <div className="w-full max-w-sm">
-        <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold text-gray-900">Publish Everywhere</h1>
-          <p className="mt-2 text-sm text-gray-500">
-            Write once, publish to Medium, WordPress &amp; Substack.
+    <div className="flex min-h-screen">
+      {/* Left panel */}
+      <div className="hidden lg:flex lg:w-1/2 items-center justify-center bg-neutral-950 px-16">
+        <div className="max-w-md">
+          <h2 className="text-4xl font-bold tracking-tight text-white leading-tight">
+            Start publishing<br />
+            <span className="text-neutral-500">in seconds.</span>
+          </h2>
+          <p className="mt-4 text-sm text-neutral-400 leading-relaxed">
+            Connect your accounts, write your content, and reach your audience on every platform.
           </p>
+          <div className="mt-10 space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="h-1.5 w-1.5 rounded-full bg-accent-500" />
+              <span className="text-sm text-neutral-400">One-click publishing to three platforms</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="h-1.5 w-1.5 rounded-full bg-accent-500" />
+              <span className="text-sm text-neutral-400">Markdown support with full formatting</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="h-1.5 w-1.5 rounded-full bg-accent-500" />
+              <span className="text-sm text-neutral-400">Track every publication in real-time</span>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div className="card">
-          <h2 className="mb-6 text-lg font-semibold text-gray-900">Create account</h2>
+      {/* Right panel - form */}
+      <div className="flex flex-1 items-center justify-center px-6 py-12">
+        <div className="w-full max-w-sm animate-fade-in">
+          <Link href="/" className="text-sm font-semibold tracking-tight text-neutral-900 mb-12 inline-block">
+            Publish Everywhere
+          </Link>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <h1 className="text-2xl font-bold tracking-tight text-neutral-900">
+            Create your account
+          </h1>
+          <p className="mt-1 text-sm text-neutral-500">
+            Get started with multi-platform publishing.
+          </p>
+
+          <form onSubmit={handleSubmit} className="mt-8 space-y-5">
             <div>
               <label htmlFor="email" className="label">
                 Email
@@ -64,6 +94,7 @@ export default function SignupPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 className="input"
                 placeholder="you@example.com"
+                autoComplete="email"
               />
             </div>
 
@@ -80,6 +111,7 @@ export default function SignupPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 className="input"
                 placeholder="Min. 8 characters"
+                autoComplete="new-password"
               />
             </div>
 
@@ -96,24 +128,32 @@ export default function SignupPage() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="input"
                 placeholder="Repeat password"
+                autoComplete="new-password"
               />
             </div>
 
             {error && (
-              <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+              <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700 border border-red-100">
                 {error}
-              </p>
+              </div>
             )}
 
             <button type="submit" disabled={loading} className="btn-primary w-full">
-              {loading ? "Creating account..." : "Create account"}
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <span className="spinner-white" />
+                  Creating account...
+                </span>
+              ) : (
+                "Create account"
+              )}
             </button>
           </form>
 
-          <p className="mt-4 text-center text-sm text-gray-500">
+          <p className="mt-8 text-center text-sm text-neutral-400">
             Already have an account?{" "}
-            <Link href="/login" className="font-medium text-accent-600 hover:text-accent-700">
-              Log in
+            <Link href="/login" className="font-medium text-neutral-900 hover:underline">
+              Sign in
             </Link>
           </p>
         </div>

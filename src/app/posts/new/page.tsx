@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import AppShell from "@/components/AppShell";
 import ProviderIcon, { providerNames } from "@/components/ProviderIcon";
 import StatusBadge from "@/components/StatusBadge";
@@ -27,13 +28,15 @@ export default function NewPostPage() {
   const [bodyMarkdown, setBodyMarkdown] = useState("");
   const [tagsInput, setTagsInput] = useState("");
   const [canonicalUrl, setCanonicalUrl] = useState("");
-  const [publishStatus, setPublishStatus] = useState<"draft" | "public">("draft");
+  const [publishStatus, setPublishStatus] = useState<"draft" | "public">(
+    "draft"
+  );
   const [selectedProviders, setSelectedProviders] = useState<Set<ProviderType>>(
     new Set()
   );
-  const [connectedProviders, setConnectedProviders] = useState<Set<ProviderType>>(
-    new Set()
-  );
+  const [connectedProviders, setConnectedProviders] = useState<
+    Set<ProviderType>
+  >(new Set());
 
   const [publishing, setPublishing] = useState(false);
   const [results, setResults] = useState<PublicationResult[] | null>(null);
@@ -54,11 +57,8 @@ export default function NewPostPage() {
   function toggleProvider(p: ProviderType) {
     setSelectedProviders((prev) => {
       const next = new Set(prev);
-      if (next.has(p)) {
-        next.delete(p);
-      } else {
-        next.add(p);
-      }
+      if (next.has(p)) next.delete(p);
+      else next.add(p);
       return next;
     });
   }
@@ -111,247 +111,273 @@ export default function NewPostPage() {
 
   return (
     <AppShell>
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">New Post</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          Write your content and publish to multiple platforms at once.
-        </p>
-      </div>
+      <div className="animate-fade-in">
+        <div className="mb-10">
+          <h1 className="section-title">New Post</h1>
+          <p className="section-subtitle">
+            Write once, publish everywhere.
+          </p>
+        </div>
 
-      {results ? (
-        <div className="card">
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">
-            Publishing Results
-          </h2>
-          <div className="space-y-3">
-            {results.map((r, i) => (
-              <div
-                key={i}
-                className="flex items-center justify-between rounded-lg border border-gray-100 p-4"
-              >
-                <div className="flex items-center gap-3">
-                  <ProviderIcon provider={r.providerType} size="md" />
-                  <div>
-                    <p className="font-medium text-gray-900">
-                      {providerNames[r.providerType]}
-                    </p>
-                    {r.remoteUrl && (
-                      <a
-                        href={r.remoteUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm text-accent-600 hover:underline"
-                      >
-                        View post &rarr;
-                      </a>
-                    )}
-                    {r.errorMessage && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {r.errorMessage}
+        {results ? (
+          <div className="card animate-scale-in">
+            <h2 className="text-lg font-semibold text-neutral-900 mb-6">
+              Results
+            </h2>
+            <div className="space-y-3">
+              {results.map((r, i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between rounded-2xl border border-neutral-100 p-5 transition-all duration-200 hover:bg-neutral-50"
+                >
+                  <div className="flex items-center gap-4">
+                    <ProviderIcon provider={r.providerType} size="lg" />
+                    <div>
+                      <p className="text-sm font-semibold text-neutral-900">
+                        {providerNames[r.providerType]}
                       </p>
-                    )}
-                  </div>
-                </div>
-                <StatusBadge status={r.status as "SUCCESS" | "FAILED"} />
-              </div>
-            ))}
-          </div>
-          <div className="mt-6 flex gap-3">
-            <button
-              onClick={() => {
-                setResults(null);
-                setTitle("");
-                setSubtitle("");
-                setBodyMarkdown("");
-                setTagsInput("");
-                setCanonicalUrl("");
-              }}
-              className="btn-secondary"
-            >
-              New Post
-            </button>
-            <button
-              onClick={() => router.push("/posts")}
-              className="btn-primary"
-            >
-              View All Posts
-            </button>
-          </div>
-        </div>
-      ) : (
-        <div className="space-y-6">
-          {/* Title and subtitle */}
-          <div className="card">
-            <div className="space-y-4">
-              <div>
-                <label className="label">Title</label>
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  className="input"
-                  placeholder="Your post title"
-                />
-              </div>
-              <div>
-                <label className="label">
-                  Subtitle{" "}
-                  <span className="font-normal text-gray-400">(optional)</span>
-                </label>
-                <input
-                  type="text"
-                  value={subtitle}
-                  onChange={(e) => setSubtitle(e.target.value)}
-                  className="input"
-                  placeholder="A brief subtitle"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Body */}
-          <div className="card">
-            <label className="label">Body (Markdown)</label>
-            <textarea
-              value={bodyMarkdown}
-              onChange={(e) => setBodyMarkdown(e.target.value)}
-              rows={16}
-              className="input font-mono text-sm"
-              placeholder="Write your post content in Markdown..."
-            />
-          </div>
-
-          {/* Tags and canonical URL */}
-          <div className="card">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div>
-                <label className="label">
-                  Tags{" "}
-                  <span className="font-normal text-gray-400">
-                    (comma-separated)
-                  </span>
-                </label>
-                <input
-                  type="text"
-                  value={tagsInput}
-                  onChange={(e) => setTagsInput(e.target.value)}
-                  className="input"
-                  placeholder="react, javascript, web-dev"
-                />
-              </div>
-              <div>
-                <label className="label">
-                  Canonical URL{" "}
-                  <span className="font-normal text-gray-400">(optional)</span>
-                </label>
-                <input
-                  type="url"
-                  value={canonicalUrl}
-                  onChange={(e) => setCanonicalUrl(e.target.value)}
-                  className="input"
-                  placeholder="https://yourblog.com/original-post"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Publish options */}
-          <div className="card">
-            <h3 className="mb-4 text-base font-semibold text-gray-900">
-              Publishing Options
-            </h3>
-
-            {/* Publish status */}
-            <div className="mb-6">
-              <p className="label">Publish as</p>
-              <div className="flex gap-4">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="publishStatus"
-                    checked={publishStatus === "draft"}
-                    onChange={() => setPublishStatus("draft")}
-                    className="h-4 w-4 text-accent-600 focus:ring-accent-500"
-                  />
-                  <span className="text-sm text-gray-700">Draft</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="publishStatus"
-                    checked={publishStatus === "public"}
-                    onChange={() => setPublishStatus("public")}
-                    className="h-4 w-4 text-accent-600 focus:ring-accent-500"
-                  />
-                  <span className="text-sm text-gray-700">Public</span>
-                </label>
-              </div>
-            </div>
-
-            {/* Provider checkboxes */}
-            <div>
-              <p className="label">Publish to</p>
-              <div className="space-y-2">
-                {ALL_PROVIDERS.map((p) => {
-                  const connected = connectedProviders.has(p);
-                  return (
-                    <label
-                      key={p}
-                      className={`flex items-center gap-3 rounded-lg border p-3 cursor-pointer transition-colors ${
-                        selectedProviders.has(p)
-                          ? "border-accent-300 bg-accent-50"
-                          : "border-gray-200 bg-white"
-                      } ${!connected ? "opacity-50" : ""}`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={selectedProviders.has(p)}
-                        onChange={() => toggleProvider(p)}
-                        disabled={!connected}
-                        className="h-4 w-4 rounded text-accent-600 focus:ring-accent-500"
-                      />
-                      <ProviderIcon provider={p} />
-                      <span className="text-sm font-medium text-gray-900">
-                        {providerNames[p]}
-                      </span>
-                      {!connected && (
-                        <span className="text-xs text-gray-400">
-                          (not connected)
-                        </span>
+                      {r.remoteUrl && (
+                        <a
+                          href={r.remoteUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-accent-600 hover:underline"
+                        >
+                          View published post
+                        </a>
                       )}
-                    </label>
-                  );
-                })}
-              </div>
+                      {r.errorMessage && (
+                        <p className="mt-1 text-xs text-red-500">
+                          {r.errorMessage}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <StatusBadge status={r.status as "SUCCESS" | "FAILED"} />
+                </div>
+              ))}
+            </div>
+            <div className="mt-8 flex gap-3">
+              <button
+                onClick={() => {
+                  setResults(null);
+                  setTitle("");
+                  setSubtitle("");
+                  setBodyMarkdown("");
+                  setTagsInput("");
+                  setCanonicalUrl("");
+                }}
+                className="btn-secondary text-sm"
+              >
+                Write another
+              </button>
+              <button
+                onClick={() => router.push("/posts")}
+                className="btn-primary text-sm"
+              >
+                View all posts
+              </button>
             </div>
           </div>
+        ) : (
+          <div className="space-y-6 animate-fade-in-up">
+            {/* Content */}
+            <div className="card">
+              <div className="space-y-5">
+                <div>
+                  <label className="label">Title</label>
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    className="input text-base font-medium"
+                    placeholder="Your post title"
+                  />
+                </div>
+                <div>
+                  <label className="label">
+                    Subtitle
+                    <span className="font-normal text-neutral-300 ml-1">
+                      optional
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    value={subtitle}
+                    onChange={(e) => setSubtitle(e.target.value)}
+                    className="input"
+                    placeholder="A brief subtitle"
+                  />
+                </div>
+              </div>
+            </div>
 
-          {/* Error */}
-          {error && (
-            <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
-              {error}
-            </p>
-          )}
+            {/* Body */}
+            <div className="card">
+              <label className="label">Content</label>
+              <textarea
+                value={bodyMarkdown}
+                onChange={(e) => setBodyMarkdown(e.target.value)}
+                rows={18}
+                className="input font-mono text-sm leading-relaxed resize-y"
+                placeholder="Write in Markdown..."
+              />
+            </div>
 
-          {/* Submit */}
-          <div className="flex justify-end">
-            <button
-              onClick={handlePublish}
-              disabled={publishing}
-              className="btn-primary px-8"
-            >
-              {publishing ? (
-                <span className="flex items-center gap-2">
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                  Publishing...
-                </span>
-              ) : (
-                "Publish"
-              )}
-            </button>
+            {/* Metadata */}
+            <div className="card">
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <div>
+                  <label className="label">
+                    Tags
+                    <span className="font-normal text-neutral-300 ml-1">
+                      comma-separated
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    value={tagsInput}
+                    onChange={(e) => setTagsInput(e.target.value)}
+                    className="input"
+                    placeholder="react, javascript, web-dev"
+                  />
+                </div>
+                <div>
+                  <label className="label">
+                    Canonical URL
+                    <span className="font-normal text-neutral-300 ml-1">
+                      optional
+                    </span>
+                  </label>
+                  <input
+                    type="url"
+                    value={canonicalUrl}
+                    onChange={(e) => setCanonicalUrl(e.target.value)}
+                    className="input"
+                    placeholder="https://yourblog.com/post"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Publish Options */}
+            <div className="card">
+              <h3 className="text-base font-semibold text-neutral-900 mb-6">
+                Publishing
+              </h3>
+
+              {/* Status toggle */}
+              <div className="mb-6">
+                <p className="label">Visibility</p>
+                <div className="inline-flex rounded-full border border-neutral-200 p-1">
+                  <button
+                    type="button"
+                    onClick={() => setPublishStatus("draft")}
+                    className={`rounded-full px-5 py-2 text-sm font-medium transition-all duration-200 ${
+                      publishStatus === "draft"
+                        ? "bg-neutral-900 text-white"
+                        : "text-neutral-500 hover:text-neutral-900"
+                    }`}
+                  >
+                    Draft
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPublishStatus("public")}
+                    className={`rounded-full px-5 py-2 text-sm font-medium transition-all duration-200 ${
+                      publishStatus === "public"
+                        ? "bg-neutral-900 text-white"
+                        : "text-neutral-500 hover:text-neutral-900"
+                    }`}
+                  >
+                    Public
+                  </button>
+                </div>
+              </div>
+
+              {/* Platforms */}
+              <div>
+                <p className="label">Platforms</p>
+                <div className="space-y-2">
+                  {ALL_PROVIDERS.map((p) => {
+                    const connected = connectedProviders.has(p);
+                    const selected = selectedProviders.has(p);
+                    return (
+                      <button
+                        key={p}
+                        type="button"
+                        onClick={() => connected && toggleProvider(p)}
+                        disabled={!connected}
+                        className={`flex w-full items-center gap-4 rounded-2xl border p-4 text-left transition-all duration-200 ${
+                          selected
+                            ? "border-neutral-900 bg-neutral-50"
+                            : "border-neutral-100 bg-white hover:border-neutral-200"
+                        } ${!connected ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
+                      >
+                        <ProviderIcon provider={p} size="md" />
+                        <div className="flex-1">
+                          <span className="text-sm font-medium text-neutral-900">
+                            {providerNames[p]}
+                          </span>
+                          {!connected && (
+                            <span className="block text-xs text-neutral-400 mt-0.5">
+                              Not connected -{" "}
+                              <Link
+                                href="/accounts"
+                                className="text-accent-600 hover:underline"
+                              >
+                                set up
+                              </Link>
+                            </span>
+                          )}
+                        </div>
+                        <div
+                          className={`h-5 w-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+                            selected
+                              ? "border-neutral-900 bg-neutral-900"
+                              : "border-neutral-300"
+                          }`}
+                        >
+                          {selected && (
+                            <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Error */}
+            {error && (
+              <div className="rounded-2xl bg-red-50 px-5 py-4 text-sm text-red-700 border border-red-100">
+                {error}
+              </div>
+            )}
+
+            {/* Submit */}
+            <div className="flex justify-end pt-2">
+              <button
+                onClick={handlePublish}
+                disabled={publishing}
+                className="btn-primary px-10"
+              >
+                {publishing ? (
+                  <span className="flex items-center gap-2">
+                    <span className="spinner-white" />
+                    Publishing...
+                  </span>
+                ) : (
+                  "Publish"
+                )}
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </AppShell>
   );
 }

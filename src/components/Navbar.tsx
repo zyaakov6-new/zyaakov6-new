@@ -20,10 +20,18 @@ export default function Navbar() {
     router.push("/login");
   }
 
+  function isActive(href: string) {
+    if (href === "/posts") return pathname === "/posts";
+    return pathname === href || (pathname?.startsWith(href + "/") ?? false);
+  }
+
   return (
-    <header className="border-b border-gray-200 bg-white">
-      <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4 sm:px-6">
-        <Link href="/dashboard" className="text-lg font-semibold text-gray-900">
+    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-neutral-100">
+      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
+        <Link
+          href="/dashboard"
+          className="text-sm font-semibold tracking-tight text-neutral-900"
+        >
           Publish Everywhere
         </Link>
 
@@ -32,10 +40,10 @@ export default function Navbar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                pathname === item.href || pathname?.startsWith(item.href + "/")
-                  ? "bg-accent-50 text-accent-700"
-                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+              className={`relative rounded-full px-4 py-1.5 text-[13px] font-medium transition-all duration-200 ${
+                isActive(item.href)
+                  ? "bg-neutral-900 text-white"
+                  : "text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100"
               }`}
             >
               {item.label}
@@ -45,22 +53,22 @@ export default function Navbar() {
 
         <button
           onClick={handleLogout}
-          className="rounded-lg px-3 py-2 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
+          className="rounded-full px-4 py-1.5 text-[13px] font-medium text-neutral-400 transition-all duration-200 hover:text-neutral-900 hover:bg-neutral-100"
         >
           Log out
         </button>
       </div>
 
       {/* Mobile nav */}
-      <nav className="flex gap-1 overflow-x-auto border-t border-gray-100 px-4 py-2 sm:hidden">
+      <nav className="flex gap-1 overflow-x-auto px-4 py-2 sm:hidden border-t border-neutral-50">
         {navItems.map((item) => (
           <Link
             key={item.href}
             href={item.href}
-            className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
-              pathname === item.href || pathname?.startsWith(item.href + "/")
-                ? "bg-accent-50 text-accent-700"
-                : "text-gray-600 hover:bg-gray-100"
+            className={`whitespace-nowrap rounded-full px-4 py-1.5 text-[13px] font-medium transition-all duration-200 ${
+              isActive(item.href)
+                ? "bg-neutral-900 text-white"
+                : "text-neutral-500 hover:bg-neutral-100"
             }`}
           >
             {item.label}
