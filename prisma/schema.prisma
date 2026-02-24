@@ -17,29 +17,18 @@ model User {
   posts        Post[]
 }
 
-enum ProviderType {
-  MEDIUM
-  WORDPRESS
-  SUBSTACK
-}
-
 model ProviderCredential {
-  id           String       @id @default(cuid())
+  id           String   @id @default(cuid())
   userId       String
-  providerType ProviderType
-  config       String       // Encrypted JSON blob with tokens/keys
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  providerType String   // "MEDIUM" | "WORDPRESS" | "SUBSTACK"
+  config       String   // Encrypted JSON blob with tokens/keys
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, providerType])
   @@index([userId])
-}
-
-enum PublicationStatus {
-  SUCCESS
-  FAILED
 }
 
 model Post {
@@ -48,7 +37,7 @@ model Post {
   title        String
   subtitle     String?
   content      String            // Markdown body
-  tags         String[]          // Array of tag strings
+  tags         String            @default("") // JSON array stored as string
   canonicalUrl String?
   createdAt    DateTime          @default(now())
   publications PostPublication[]
@@ -59,14 +48,14 @@ model Post {
 }
 
 model PostPublication {
-  id           String            @id @default(cuid())
+  id           String   @id @default(cuid())
   postId       String
-  providerType ProviderType
+  providerType String   // "MEDIUM" | "WORDPRESS" | "SUBSTACK"
   remoteId     String?
   remoteUrl    String?
-  status       PublicationStatus
+  status       String   // "SUCCESS" | "FAILED"
   errorMessage String?
-  createdAt    DateTime          @default(now())
+  createdAt    DateTime @default(now())
 
   post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
 

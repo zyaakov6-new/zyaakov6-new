@@ -9,7 +9,7 @@ import {
   WordpressCredentialConfig,
   SubstackCredentialConfig,
 } from "@/lib/types";
-import { ProviderType, PublicationStatus } from "@prisma/client";
+// With SQLite, enums are stored as plain strings
 import { publishToMedium } from "@/services/mediumService";
 import { publishToWordpress } from "@/services/wordpressService";
 import { publishToSubstack } from "@/services/substackService";
@@ -42,7 +42,13 @@ export async function GET(req: NextRequest) {
     orderBy: { createdAt: "desc" },
   });
 
-  return NextResponse.json<ApiResponse>({ success: true, data: posts });
+  // Parse tags JSON string back to array for the frontend
+  const parsed = posts.map((p) => ({
+    ...p,
+    tags: JSON.parse(p.tags || "[]") as string[],
+  }));
+
+  return NextResponse.json<ApiResponse>({ success: true, data: parsed });
 }
 
 /** POST /api/posts — create a post and publish to selected providers */
@@ -95,7 +101,7 @@ export async function POST(req: NextRequest) {
       title,
       subtitle,
       content: bodyMarkdown,
-      tags: tags ?? [],
+      tags: JSON.stringify(tags ?? []),
       canonicalUrl,
     },
   });
@@ -113,7 +119,7 @@ export async function POST(req: NextRequest) {
   const credentials = await prisma.providerCredential.findMany({
     where: {
       userId: authUser.userId,
-      providerType: { in: providers as ProviderType[] },
+      providerType: { in: providers },
     },
   });
 
@@ -123,13 +129,13 @@ export async function POST(req: NextRequest) {
 
   // Publish to each provider in parallel
   const publishPromises = providers.map(async (provider: string) => {
-    const encryptedConfig = credMap.get(provider as ProviderType);
+    const encryptedConfig = credMap.get(provider as string);
     if (!encryptedConfig) {
       return prisma.postPublication.create({
         data: {
           postId: post.id,
-          providerType: provider as ProviderType,
-          status: "FAILED" as PublicationStatus,
+          providerType: provider as string,
+          status: "FAILED" as string,
           errorMessage: `No credentials found for ${provider}. Please connect your account first.`,
         },
       });
@@ -160,7 +166,7 @@ export async function POST(req: NextRequest) {
     return prisma.postPublication.create({
       data: {
         postId: post.id,
-        providerType: provider as ProviderType,
+        providerType: provider as string,
         status: result.success ? "SUCCESS" : "FAILED",
         remoteId: result.remoteId ?? null,
         remoteUrl: result.remoteUrl ?? null,
