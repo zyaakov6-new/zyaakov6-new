@@ -47,7 +47,7 @@ export async function PUT(req: NextRequest) {
     );
   }
 
-  if (!["MEDIUM", "WORDPRESS", "SUBSTACK"].includes(providerType)) {
+  if (!["MEDIUM", "WORDPRESS"].includes(providerType)) {
     return NextResponse.json<ApiResponse>(
       { success: false, error: "Invalid provider type." },
       { status: 400 }
@@ -94,7 +94,7 @@ export async function DELETE(req: NextRequest) {
   const providerType = req.nextUrl.searchParams.get("providerType");
   if (
     !providerType ||
-    !["MEDIUM", "WORDPRESS", "SUBSTACK"].includes(providerType)
+    !["MEDIUM", "WORDPRESS"].includes(providerType)
   ) {
     return NextResponse.json<ApiResponse>(
       { success: false, error: "Valid providerType query param is required." },

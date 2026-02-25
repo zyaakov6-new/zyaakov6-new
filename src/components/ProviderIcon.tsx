@@ -3,19 +3,16 @@ import { cn } from "@/lib/cn";
 const providerStyles: Record<string, string> = {
   MEDIUM: "bg-neutral-900 text-white",
   WORDPRESS: "bg-blue-600 text-white",
-  SUBSTACK: "bg-orange-500 text-white",
 };
 
 const providerLabels: Record<string, string> = {
   MEDIUM: "M",
   WORDPRESS: "W",
-  SUBSTACK: "S",
 };
 
 export const providerNames: Record<string, string> = {
   MEDIUM: "Medium",
   WORDPRESS: "WordPress",
-  SUBSTACK: "Substack",
 };
 
 interface ProviderIconProps {

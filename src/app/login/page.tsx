@@ -41,12 +41,11 @@ export default function LoginPage() {
             <span className="text-neutral-500">Every platform.</span>
           </h2>
           <p className="mt-4 text-sm text-neutral-400 leading-relaxed">
-            Publish to Medium, WordPress, and Substack from a single, beautiful dashboard.
+            Publish to Medium and WordPress from a single, beautiful dashboard.
           </p>
           <div className="mt-10 flex items-center gap-4">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 text-xs font-bold text-white">M</div>
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 text-xs font-bold text-white">W</div>
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 text-xs font-bold text-white">S</div>
           </div>
         </div>
       </div>

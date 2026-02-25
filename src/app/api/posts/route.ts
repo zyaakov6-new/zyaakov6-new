@@ -7,12 +7,10 @@ import {
   PostInput,
   MediumCredentialConfig,
   WordpressCredentialConfig,
-  SubstackCredentialConfig,
 } from "@/lib/types";
 // With SQLite, enums are stored as plain strings
 import { publishToMedium } from "@/services/mediumService";
 import { publishToWordpress } from "@/services/wordpressService";
-import { publishToSubstack } from "@/services/substackService";
 
 /** GET /api/posts — list the current user's posts */
 export async function GET(req: NextRequest) {
@@ -77,7 +75,7 @@ export async function POST(req: NextRequest) {
     tags?: string[];
     canonicalUrl?: string;
     publishStatus: "draft" | "public";
-    providers: string[]; // ["MEDIUM", "WORDPRESS", "SUBSTACK"]
+    providers: string[]; // ["MEDIUM", "WORDPRESS"]
   };
 
   if (!title || !bodyMarkdown) {
@@ -151,9 +149,6 @@ export async function POST(req: NextRequest) {
           break;
         case "WORDPRESS":
           result = await publishToWordpress(postInput, config as WordpressCredentialConfig);
-          break;
-        case "SUBSTACK":
-          result = await publishToSubstack(postInput, config as SubstackCredentialConfig);
           break;
         default:
           result = { success: false, error: `Unknown provider: ${provider}` };

@@ -8,9 +8,9 @@ import ProviderIcon, { providerNames } from "@/components/ProviderIcon";
 import StatusBadge from "@/components/StatusBadge";
 import { apiFetch } from "@/lib/api";
 
-type ProviderType = "MEDIUM" | "WORDPRESS" | "SUBSTACK";
+type ProviderType = "MEDIUM" | "WORDPRESS";
 
-const ALL_PROVIDERS: ProviderType[] = ["MEDIUM", "WORDPRESS", "SUBSTACK"];
+const ALL_PROVIDERS: ProviderType[] = ["MEDIUM", "WORDPRESS"];
 
 interface PublicationResult {
   providerType: string;

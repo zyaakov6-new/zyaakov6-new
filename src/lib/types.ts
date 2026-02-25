@@ -34,12 +34,6 @@ export interface WordpressCredentialConfig {
   applicationPassword: string;
 }
 
-export interface SubstackCredentialConfig {
-  publicationUrl: string;
-  authToken: string;
-}
-
 export type ProviderConfig =
   | MediumCredentialConfig
-  | WordpressCredentialConfig
-  | SubstackCredentialConfig;
+  | WordpressCredentialConfig;

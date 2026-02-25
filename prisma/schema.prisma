@@ -35,7 +35,7 @@ model PasswordReset {
 model ProviderCredential {
   id           String   @id @default(cuid())
   userId       String
-  providerType String   // "MEDIUM" | "WORDPRESS" | "SUBSTACK"
+  providerType String   // "MEDIUM" | "WORDPRESS"
   config       String   // Encrypted JSON blob with tokens/keys
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -65,7 +65,7 @@ model Post {
 model PostPublication {
   id           String   @id @default(cuid())
   postId       String
-  providerType String   // "MEDIUM" | "WORDPRESS" | "SUBSTACK"
+  providerType String   // "MEDIUM" | "WORDPRESS"
   remoteId     String?
   remoteUrl    String?
   status       String   // "SUCCESS" | "FAILED"

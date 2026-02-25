@@ -5,7 +5,7 @@ import AppShell from "@/components/AppShell";
 import ProviderIcon from "@/components/ProviderIcon";
 import { apiFetch } from "@/lib/api";
 
-type ProviderType = "MEDIUM" | "WORDPRESS" | "SUBSTACK";
+type ProviderType = "MEDIUM" | "WORDPRESS";
 
 interface CredentialRecord {
   id: string;
@@ -27,11 +27,6 @@ export default function AccountsPage() {
   const [wpUsername, setWpUsername] = useState("");
   const [wpPassword, setWpPassword] = useState("");
   const [wpStatus, setWpStatus] = useState<string | null>(null);
-
-  // Substack
-  const [substackUrl, setSubstackUrl] = useState("");
-  const [substackToken, setSubstackToken] = useState("");
-  const [substackStatus, setSubstackStatus] = useState<string | null>(null);
 
   const loadCredentials = useCallback(async () => {
     const res = await apiFetch<CredentialRecord[]>("/api/credentials");
@@ -123,26 +118,6 @@ export default function AccountsPage() {
       setWpPassword("");
     } else {
       setWpStatus(`error:${save.error ?? "Failed to save."}`);
-    }
-  }
-
-  async function handleSubstackSave() {
-    if (!substackUrl.trim() || !substackToken.trim()) {
-      setSubstackStatus("error:Please fill in all Substack fields.");
-      return;
-    }
-    const config = {
-      publicationUrl: substackUrl,
-      authToken: substackToken,
-    };
-    setSubstackStatus("saving");
-    const save = await saveCredential("SUBSTACK", config);
-    if (save.success) {
-      setSubstackStatus("success:Substack credentials saved!");
-      setSubstackUrl("");
-      setSubstackToken("");
-    } else {
-      setSubstackStatus(`error:${save.error ?? "Failed to save."}`);
     }
   }
 
@@ -308,66 +283,6 @@ export default function AccountsPage() {
                 {isConnected("WORDPRESS") && (
                   <button
                     onClick={() => deleteCredential("WORDPRESS")}
-                    className="btn-ghost text-sm text-red-500 hover:text-red-700 hover:bg-red-50"
-                  >
-                    Disconnect
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {/* Substack */}
-            <div className="card">
-              <div className="flex items-start justify-between mb-6">
-                <div className="flex items-center gap-3">
-                  <ProviderIcon provider="SUBSTACK" size="lg" />
-                  <div>
-                    <h3 className="text-base font-semibold text-neutral-900">
-                      Substack
-                    </h3>
-                    <p className="text-sm text-neutral-400">
-                      Session cookie
-                    </p>
-                  </div>
-                </div>
-                {isConnected("SUBSTACK") && <ConnectedBadge />}
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="label">Publication URL</label>
-                  <input
-                    type="url"
-                    value={substackUrl}
-                    onChange={(e) => setSubstackUrl(e.target.value)}
-                    className="input"
-                    placeholder="https://yourpub.substack.com"
-                  />
-                </div>
-                <div>
-                  <label className="label">Session Token</label>
-                  <input
-                    type="password"
-                    value={substackToken}
-                    onChange={(e) => setSubstackToken(e.target.value)}
-                    className="input"
-                    placeholder="substack.sid cookie value"
-                  />
-                  <p className="mt-2 text-xs text-neutral-400">
-                    DevTools &rarr; Application &rarr; Cookies after logging in
-                  </p>
-                </div>
-              </div>
-
-              {renderStatus(substackStatus)}
-
-              <div className="mt-5 flex gap-3">
-                <button onClick={handleSubstackSave} className="btn-primary text-sm py-2.5">
-                  {isConnected("SUBSTACK") ? "Update" : "Connect"}
-                </button>
-                {isConnected("SUBSTACK") && (
-                  <button
-                    onClick={() => deleteCredential("SUBSTACK")}
                     className="btn-ghost text-sm text-red-500 hover:text-red-700 hover:bg-red-50"
                   >
                     Disconnect

@@ -1,11 +1,11 @@
 # Publish Everywhere
 
-Write once, publish to Medium, WordPress, and Substack from a single dashboard.
+Write once, publish to Medium and WordPress from a single dashboard.
 
 ## Features
 
 - **Email/password authentication** with JWT sessions
-- **Connect accounts** for Medium, WordPress, and Substack
+- **Connect accounts** for Medium and WordPress
 - **Rich Markdown editor** for writing posts
 - **One-click multi-platform publishing** with per-platform status tracking
 - **Post history** with links to live published articles
@@ -87,17 +87,6 @@ The app will be available at [http://localhost:3000](http://localhost:3000).
 3. Create a new application password
 4. Enter your site URL, username, and application password in the Connect Accounts page
 
-### Substack
-
-Substack does not have an official public API. This app uses Substack's internal API endpoints:
-
-1. Log into your Substack publication in a browser
-2. Open DevTools > Application > Cookies
-3. Copy the value of the `substack.sid` cookie
-4. Enter your publication URL and session cookie in the Connect Accounts page
-
-**Note**: This is an unofficial integration. The session cookie may expire and need to be refreshed. If Substack releases an official API, this integration should be updated.
-
 ## Project Structure
 
 ```
@@ -133,13 +122,12 @@ src/
 └── services/
     ├── mediumService.ts   # Medium API integration
     ├── normalization.ts   # Post input normalization + payload mappers
-    ├── substackService.ts # Substack (unofficial) API integration
     └── wordpressService.ts # WordPress REST API integration
 ```
 
 ## Adding New Platforms
 
-To add a new publishing platform:
+To add a new publishing platform (must have an official public API):
 
 1. Add the provider to the `ProviderType` enum in `prisma/schema.prisma`
 2. Create a new service file in `src/services/` (e.g., `devtoService.ts`)

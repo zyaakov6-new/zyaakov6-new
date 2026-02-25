@@ -3,7 +3,6 @@ import { getAuthUserFromRequest } from "@/lib/auth";
 import { ApiResponse } from "@/lib/types";
 import { testMediumConnection } from "@/services/mediumService";
 import { testWordpressConnection } from "@/services/wordpressService";
-import { testSubstackConnection } from "@/services/substackService";
 
 /** POST /api/credentials/test — test a provider's credentials without saving them */
 export async function POST(req: NextRequest) {
@@ -32,9 +31,6 @@ export async function POST(req: NextRequest) {
       break;
     case "WORDPRESS":
       result = await testWordpressConnection(config);
-      break;
-    case "SUBSTACK":
-      result = await testSubstackConnection(config);
       break;
     default:
       return NextResponse.json<ApiResponse>(

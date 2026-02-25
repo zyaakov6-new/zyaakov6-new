@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Publish Everywhere",
-  description: "Write once, publish to Medium, WordPress, and Substack.",
+  description: "Write once, publish to Medium and WordPress.",
 };
 
 export default function RootLayout({

@@ -2,7 +2,6 @@ import {
   PostInput,
   MediumCredentialConfig,
   WordpressCredentialConfig,
-  SubstackCredentialConfig,
 } from "@/lib/types";
 import { marked } from "marked";
 
@@ -26,14 +25,6 @@ export interface WordpressPayload {
   slug?: string;
 }
 
-/** Substack draft payload (approximate shape) */
-export interface SubstackPayload {
-  title: string;
-  subtitle?: string;
-  body_html: string;
-  draft: boolean;
-}
-
 export function mapToMediumPayload(post: PostInput): MediumPayload {
   return {
     title: post.title,
@@ -55,19 +46,8 @@ export function mapToWordpressPayload(post: PostInput): WordpressPayload {
   };
 }
 
-export function mapToSubstackPayload(post: PostInput): SubstackPayload {
-  const html = marked.parse(post.bodyMarkdown) as string;
-  return {
-    title: post.title,
-    subtitle: post.subtitle,
-    body_html: html,
-    draft: post.publishStatus === "draft",
-  };
-}
-
 /** Re-export config types for convenience */
 export type {
   MediumCredentialConfig,
   WordpressCredentialConfig,
-  SubstackCredentialConfig,
 };

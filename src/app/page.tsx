@@ -32,8 +32,8 @@ export default function Home() {
             <span className="text-neutral-400">Publish everywhere.</span>
           </h1>
           <p className="mt-6 text-lg text-neutral-500 max-w-xl mx-auto leading-relaxed">
-            Craft your content in one place and push it live to Medium, WordPress,
-            and Substack with a single click.
+            Craft your content in one place and push it live to Medium and WordPress
+            with a single click.
           </p>
           <div className="mt-10 flex items-center justify-center gap-4">
             <Link href="/signup" className="btn-primary px-8 py-3.5 text-sm">
@@ -49,7 +49,7 @@ export default function Home() {
       {/* Features */}
       <section className="py-24 px-6">
         <div className="mx-auto max-w-5xl">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 max-w-3xl mx-auto">
             <div className="group rounded-3xl border border-stone-200/60 bg-stone-100/60 p-8 transition-all duration-300 hover:bg-white/80 hover:shadow-elevated hover:border-neutral-200">
               <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-neutral-900 text-white text-sm font-bold">
                 M
@@ -70,15 +70,6 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="group rounded-3xl border border-stone-200/60 bg-stone-100/60 p-8 transition-all duration-300 hover:bg-white/80 hover:shadow-elevated hover:border-neutral-200">
-              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-500 text-white text-sm font-bold">
-                S
-              </div>
-              <h3 className="text-lg font-semibold text-neutral-900">Substack</h3>
-              <p className="mt-2 text-sm leading-relaxed text-neutral-500">
-                Send newsletters to your Substack subscribers without switching tabs.
-              </p>
-            </div>
           </div>
         </div>
       </section>
@@ -97,7 +88,7 @@ export default function Home() {
               <div className="text-4xl font-bold text-neutral-200 mb-3">01</div>
               <h3 className="text-base font-semibold text-neutral-900">Connect</h3>
               <p className="mt-1 text-sm text-neutral-500 leading-relaxed">
-                Link your Medium, WordPress, and Substack accounts securely.
+                Link your Medium and WordPress accounts securely.
               </p>
             </div>
             <div>
